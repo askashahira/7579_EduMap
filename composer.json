@@ -38,23 +38,30 @@
         }
     },
     "scripts": {
-        "post-install-cmd": [
-            "php -r \"copy('https://get.pika.dev/r/google-cloud-php-run-hooks', 'hooks');\"",
-            "chmod +x hooks",
-            "./hooks",
-            "@php artisan storage:link --force",
-            "@php artisan config:cache",
-            "@php artisan route:cache",
-            "@php artisan view:cache"
-        ],
-        "post-update-cmd": [
-            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
+        ],
+        "gcp-build": [
+            "php -r \"copy('https://get.pika.dev/r/google-cloud-php-run-hooks', 'hooks');\"",
+            "chmod +x hooks",
+            "./hooks",
+            "mkdir -p bootstrap/cache",
+            "chmod -R 775 bootstrap/cache",
+            "chmod -R 775 storage",
+            "php artisan config:clear",
+            "php artisan storage:link --force",
+            "php artisan config:cache",
+            "php artisan route:cache",
+            "php artisan view:cache",
+            "npm install",
+            "npm run build"
         ]
     },
     "extra": {

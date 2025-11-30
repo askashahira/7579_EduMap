@@ -1,7 +1,7 @@
 # app.yaml
 runtime: php82
 
-entrypoint: serve /public/index.php
+entrypoint: bash -c 'composer run-script gcp-build && serve /public/index.php'
 
 GOOGLE_CLOUD_PHP_EXTENSIONS_DEPS: "libpng libjpeg oniguruma"
 
