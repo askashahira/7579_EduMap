@@ -1,9 +1,9 @@
 # app.yaml
 runtime: php82
 
-document_root: public
-
 entrypoint: serve /public/index.php
+
+GOOGLE_CLOUD_PHP_EXTENSIONS_DEPS: "libpng libjpeg oniguruma"
 
 env_variables:
   # --- Konfigurasi Laravel ---
