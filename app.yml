@@ -1,0 +1,22 @@
+# app.yaml
+runtime: php82
+
+document_root: public
+
+entrypoint: serve /public/index.php
+
+env_variables:
+  # --- Konfigurasi Laravel ---
+  APP_ENV: production
+  APP_DEBUG: 'false'
+  LOG_CHANNEL: stderr
+  
+  # --- INI WAJIB DIISI ---
+  APP_KEY: 'base64:jphKKVbOdJG/ebPqYXIMHM+gd5KAiR7xqw1R/ptalSA=' 
+  
+  # --- Konfigurasi Database (Ganti sesuai info Cloud SQL Anda) ---
+  DB_CONNECTION: mysql
+  DB_SOCKET: "/cloudsql/proyek-edumap-popl:asia-southeast2:edumap-db"
+  DB_DATABASE: "edumap"
+  DB_USERNAME: "sail"
+  DB_PASSWORD: "As061205" # <-- GANTI DENGAN PASSWORD DB ANDA

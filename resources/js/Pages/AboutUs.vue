@@ -60,9 +60,9 @@ import { Head } from '@inertiajs/vue3';
                         <!-- Bagian Tim -->
                         <div class="text-center pt-4">
                             <p class="text-sm text-gray-500">Created by:</p>
-                            <h3 class="text-2xl font-bold text-gray-800 mt-1">Tim TRIVINA</h3>
+                            <h3 class="text-2xl font-bold text-gray-800 mt-1">EduMap</h3>
                             <p class="mt-4 text-gray-600">
-                                Aska Shahira • Tasya Maulida • Sabrina Syahlia
+                                Aska Shahira • Tasya Maulida 
                             </p>
                         </div>
 
