@@ -1,5 +1,7 @@
+# Gunakan image dasar resmi PHP 8.2 dari Docker Hub
 FROM php:8.2-fpm
 
+# Set working directory di dalam container
 WORKDIR /var/www/html
 
 # Install dependensi sistem + Nginx + Supervisor
@@ -17,7 +19,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Salin file konfigurasi Nginx dan PHP-FPM
 COPY docker/nginx/default.conf /etc/nginx/sites-available/default
-# Konfigurasi PHP-FPM untuk menggunakan socket
+# Konfigurasi PHP-FPM untuk menggunakan socket dengan izin yang benar
 RUN echo "[www]\nlisten = /var/run/php/php-fpm.sock\nlisten.owner = www-data\nlisten.group = www-data\nlisten.mode = 0660" > /usr/local/etc/php-fpm.d/zz-docker.conf
 
 # Salin file aplikasi
@@ -28,15 +30,15 @@ RUN composer install --no-dev --optimize-autoloader && \
     npm install && \
     npm run build
 
-# Beri izin
+# Beri izin pada direktori storage dan cache
 RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-
-# PERBAIKAN FINAL: Beri izin pada direktori socket PHP-FPM
-RUN chown -R www-data:www-data /var/run/php
 
 # Buat file konfigurasi Supervisor
 RUN echo "[supervisord]\nnodaemon=true\n\n[program:nginx]\ncommand=/usr/sbin/nginx -g 'daemon off;'\n\n[program:php-fpm]\ncommand=/usr/local/sbin/php-fpm" > /etc/supervisor/conf.d/supervisord.conf
 
+# Expose port yang akan digunakan Nginx
 EXPOSE 8080
+
+# Jalankan Supervisor
 CMD ["/usr/bin/supervisord"]
