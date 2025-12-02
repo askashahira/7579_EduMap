@@ -37,8 +37,11 @@ RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 # Buat file konfigurasi Supervisor
 RUN echo "[supervisord]\nnodaemon=true\n\n[program:nginx]\ncommand=/usr/sbin/nginx -g 'daemon off;'\n\n[program:php-fpm]\ncommand=/usr/local/sbin/php-fpm" > /etc/supervisor/conf.d/supervisord.conf
 
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
 # Expose port yang akan digunakan Nginx
 EXPOSE 8080
 
 # Jalankan Supervisor
-CMD ["/usr/bin/supervisord"]
+# CMD ["/usr/bin/supervisord"]
