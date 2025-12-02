@@ -23,7 +23,7 @@ services:
       - key: APP_ENV
         value: production
       - key: DB_CONNECTION
-        value: mysql
+        value: pgsql
       - key: DB_HOST
         fromService:
           type: pserv
@@ -53,5 +53,5 @@ services:
   # Service untuk Database
   - type: pserv
     name: edumap-db
-    env: mysql
+    env: postgres
     plan: free
