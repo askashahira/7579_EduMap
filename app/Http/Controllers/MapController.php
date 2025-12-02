@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Routing\Controller;
 use App\Models\SchoolReport;
-use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Inertia\Inertia;
 
 class MapController extends Controller
@@ -25,7 +24,6 @@ class MapController extends Controller
          * Hapus atau beri komentar pada blok ini jika Anda sudah siap
          * menggunakan data asli dari database.
          */
-
         $dummyHeatmapPoints = [
             // [latitude, longitude, intensity]
             [5.558, 95.322, 0.5], // Banda Aceh, intensitas rendah
@@ -37,7 +35,6 @@ class MapController extends Controller
 
         return response()->json($dummyHeatmapPoints);
 
-
         /**
          * =================================================================
          * BAGIAN DATA ASLI (DARI DATABASE)
@@ -45,7 +42,7 @@ class MapController extends Controller
          * Kode di bawah ini adalah kode yang akan Anda gunakan nanti
          * jika sudah memiliki data di database.
          */
-        
+
         /*
         $approvedReports = SchoolReport::where('status', 'approved')
             ->whereNotNull('latitude')

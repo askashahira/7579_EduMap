@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Routing\Controller;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
-// Pastikan model SchoolReport di-import jika Anda ingin menggunakannya nanti
 use App\Models\SchoolReport;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+// Pastikan model SchoolReport di-import jika Anda ingin menggunakannya nanti
+use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
@@ -39,7 +39,7 @@ class DashboardController extends Controller
                 'pieChartData' => [85, 15],             // Data baru
             ];
         }
-        
+
         if ($selectedVillageId) {
             $dashboardData = [
                 'schoolCount' => 8,
@@ -63,18 +63,25 @@ class DashboardController extends Controller
 
         $prioritySchools = $allReports->map(function ($report) {
             $score = 0;
-            if ($report['internet_access'] === 'terbatas') $score += 2;
-            if ($report['internet_access'] === 'tidak_tersedia') $score += 5;
+            if ($report['internet_access'] === 'terbatas') {
+                $score += 2;
+            }
+            if ($report['internet_access'] === 'tidak_tersedia') {
+                $score += 5;
+            }
             if ($report['teacher_count'] > 0) {
                 $ratio = $report['student_count'] / $report['teacher_count'];
-                if ($ratio > 20) $score += ($ratio - 20) / 2; // Dibagi 2 agar skor lebih halus
+                if ($ratio > 20) {
+                    $score += ($ratio - 20) / 2;
+                } // Dibagi 2 agar skor lebih halus
             }
             $report['score'] = $score;
+
             return $report;
         })
-        ->sortByDesc('score')
-        ->take(5)
-        ->values(); // Reset keys agar menjadi array biasa
+            ->sortByDesc('score')
+            ->take(5)
+            ->values(); // Reset keys agar menjadi array biasa
 
         // 4. Kirim semua data ke komponen Vue sebagai props
         return Inertia::render('Dashboard', [

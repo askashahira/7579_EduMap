@@ -1,14 +1,13 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MapController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
-use App\Http\Controllers\ReportFormController; 
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ReportFormController;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::get('/', function () {
     return Inertia::render('Welcome'); // Kita akan buat file Welcome.vue
@@ -35,7 +34,7 @@ Route::get('/peta', [MapController::class, 'index'])
 Route::get('/tentang-kami', function () {
     return Inertia::render('AboutUs');
 })->name('about.us');
-    
+
 Route::get('/report/pdf', [ReportController::class, 'exportPdf'])->name('report.pdf');
 Route::get('/report/csv', [ReportController::class, 'exportCsv'])->name('report.csv');
 

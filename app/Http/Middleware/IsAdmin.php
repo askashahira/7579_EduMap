@@ -14,11 +14,12 @@ class IsAdmin
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
-{
-    if (auth()->check() && auth()->user()->role === 'admin') {
-        return $next($request);
+    {
+        if (auth()->check() && auth()->user()->role === 'admin') {
+            return $next($request);
+        }
+
+        // Jika bukan admin, alihkan ke dashboard biasa
+        return redirect('/dashboard');
     }
-    // Jika bukan admin, alihkan ke dashboard biasa
-    return redirect('/dashboard');
-}
 }

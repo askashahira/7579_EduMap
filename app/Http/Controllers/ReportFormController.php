@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Routing\Controller;
 use App\Models\SchoolReport;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class ReportFormController extends Controller
 {
