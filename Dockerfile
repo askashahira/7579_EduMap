@@ -32,6 +32,9 @@ RUN composer install --no-dev --optimize-autoloader && \
 RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
+# PERBAIKAN FINAL: Beri izin pada direktori socket PHP-FPM
+RUN chown -R www-data:www-data /var/run/php
+
 # Buat file konfigurasi Supervisor
 RUN echo "[supervisord]\nnodaemon=true\n\n[program:nginx]\ncommand=/usr/sbin/nginx -g 'daemon off;'\n\n[program:php-fpm]\ncommand=/usr/local/sbin/php-fpm" > /etc/supervisor/conf.d/supervisord.conf
 
