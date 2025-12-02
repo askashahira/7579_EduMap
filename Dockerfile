@@ -18,7 +18,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Salin file konfigurasi Nginx dan PHP-FPM
 COPY docker/nginx/default.conf /etc/nginx/sites-available/default
 # Konfigurasi PHP-FPM untuk menggunakan socket
-RUN echo "[www]\nlisten = /var/run/php/php-fpm.sock\nlisten.owner = www-data\nlisten.group = www-data" > /usr/local/etc/php-fpm.d/zz-docker.conf
+RUN echo "[www]\nlisten = /var/run/php/php-fpm.sock\nlisten.owner = www-data\nlisten.group = www-data\nlisten.mode = 0660" > /usr/local/etc/php-fpm.d/zz-docker.conf
 
 # Salin file aplikasi
 COPY . .
