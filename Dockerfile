@@ -20,7 +20,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Salin file-file aplikasi
 COPY . .
 
-# Salin konfigurasi Nginx
+# Salin konfigurasi Nginx yang akan kita buat
 COPY docker/nginx/default.conf /etc/nginx/sites-available/default
 
 # Install dependensi Composer & Build frontend
@@ -35,7 +35,7 @@ RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 # Buat file konfigurasi Supervisor
 RUN echo "[supervisord]\nnodaemon=true\n\n[program:nginx]\ncommand=/usr/sbin/nginx -g 'daemon off;'\n\n[program:php-fpm]\ncommand=/usr/local/sbin/php-fpm" > /etc/supervisor/conf.d/supervisord.conf
 
-# Expose port yang akan digunakan Nginx
+# Expose port yang akan digunakan Nginx (ini yang penting!)
 EXPOSE 8080
 
 # Jalankan Supervisor
