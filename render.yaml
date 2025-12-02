@@ -1,18 +1,14 @@
 services:
-  # Service untuk Aplikasi Web Laravel
+  # Service untuk Aplikasi Web Laravel (PHP)
   - type: web
     name: edumap-app
-    env: php
+    # Menggunakan runtime Docker karena Render merekomendasikannya untuk PHP
+    runtime: docker
+    dockerfilePath: ./Dockerfile.render # Kita akan buat file ini
     plan: free
-    buildCommand: |
-      composer install --no-dev --prefer-dist --optimize-autoloader
-      npm install
-      npm run build
-      php artisan storage:link
-      php artisan config:cache
-      php artisan migrate --force
-    startCommand: php-fpm
+    healthCheckPath: /
     envVars:
+      # Render akan menyediakan URL ini secara otomatis
       - key: APP_URL
         fromService:
           type: web
@@ -23,35 +19,24 @@ services:
       - key: APP_ENV
         value: production
       - key: DB_CONNECTION
-        value: pgsql
-      - key: DB_HOST
-        fromService:
-          type: pserv
+        value: pgsql # Kita menggunakan PostgreSQL
+      # Menggunakan satu connection string yang disediakan oleh layanan database Render
+      - key: DATABASE_URL # Laravel akan otomatis menggunakan ini
+        fromDatabase:
           name: edumap-db
-          property: host
-      - key: DB_PORT
-        fromService:
-          type: pserv
-          name: edumap-db
-          property: port
-      - key: DB_DATABASE
-        fromService:
-          type: pserv
-          name: edumap-db
-          property: database
-      - key: DB_USERNAME
-        fromService:
-          type: pserv
-          name: edumap-db
-          property: user
-      - key: DB_PASSWORD
-        fromService:
-          type: pserv
-          name: edumap-db
-          property: password
+          property: connectionString
+    autoDeploy: true
 
-  # Service untuk Database
-  - type: pserv
+  # Service untuk Database PostgreSQL
+  - type: pserv # Private Service (Database)
     name: edumap-db
-    env: postgres
+    # Menggunakan image Docker resmi PostgreSQL
+    runtime: image
+    image:
+      url: postgres:15 # Menggunakan PostgreSQL versi 15
     plan: free
+    # Volume untuk menyimpan data database secara persisten
+    disk:
+      name: pg-data
+      mountPath: /var/lib/postgresql/data
+      sizeGB: 1
