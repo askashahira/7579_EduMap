@@ -4,28 +4,15 @@ FROM php:8.2-fpm
 # Set working directory di dalam container
 WORKDIR /var/www/html
 
-# Install dependensi sistem yang dibutuhkan oleh Laravel & package Anda
-# Termasuk lib-lib untuk gd dan postgresql
+# Install dependensi sistem + Nginx + Supervisor
 RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    libpng-dev \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
-    libzip-dev \
-    unzip \
-    libpq-dev \
-    nodejs \
-    npm
+    git curl libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
+    libzip-dev unzip libpq-dev nodejs npm \
+    nginx supervisor
 
-# Konfigurasi dan install ekstensi PHP yang dibutuhkan
+# Konfigurasi dan install ekstensi PHP
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
-RUN docker-php-ext-install \
-    pdo pdo_pgsql \
-    zip \
-    gd \
-    exif \
-    bcmath
+RUN docker-php-ext-install pdo pdo_pgsql zip gd exif bcmath
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -33,21 +20,23 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Salin file-file aplikasi
 COPY . .
 
-# Install dependensi Composer (tanpa dev)
-RUN composer install --no-interaction --no-plugins --no-scripts --no-dev --prefer-dist --optimize-autoloader
+# Salin konfigurasi Nginx
+COPY docker/nginx/default.conf /etc/nginx/sites-available/default
 
-# Hapus cache Composer
-RUN composer clear-cache
+# Install dependensi Composer & Build frontend
+RUN composer install --no-dev --optimize-autoloader && \
+    npm install && \
+    npm run build
 
-# Beri izin pada folder storage dan bootstrap/cache
+# Beri izin
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Build aset frontend
-RUN npm install && npm run build
+# Buat file konfigurasi Supervisor
+RUN echo "[supervisord]\nnodaemon=true\n\n[program:nginx]\ncommand=/usr/sbin/nginx -g 'daemon off;'\n\n[program:php-fpm]\ncommand=/usr/local/sbin/php-fpm" > /etc/supervisor/conf.d/supervisord.conf
 
-# Expose port yang digunakan oleh php-fpm
-EXPOSE 9000
+# Expose port yang akan digunakan Nginx
+EXPOSE 8080
 
-# Perintah default untuk menjalankan aplikasi
-CMD ["php-fpm"]
+# Jalankan Supervisor
+CMD ["/usr/bin/supervisord"]
